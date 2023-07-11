@@ -149,7 +149,7 @@ def plot_figure2():
     target.append(cur_target)
     plt.plot(beta, cur_target, label=r'$\displaystyle\frac{x_1}{alpha_3!}'
                                         r'+ \frac{x_1}{min\{0.95*beta,alpha_3-0.05*beta\}!}$')
-    plt.ylabel('gain of attacker')
+    plt.ylabel(r'攻击者收益')
     plt.xlabel('number of attack targets',fontsize=20,color="b")
     plt.ylim((0, 20))
     plt.xlim((0, 5))
