@@ -11,7 +11,7 @@ import traceback
 
 plt.rcParams['font.sans-serif']=['SimHei']
 # plt.rcParams.update({'font.size': 22}) 
-plt.rcParams["figure.dpi"] = 200
+# plt.rcParams["figure.dpi"] = 120
 
 def factorial(start,end):   
     res = 1
@@ -192,6 +192,48 @@ def plot_figure4():
         plt.savefig(f'./different_factors_results/second/真实设备数量为{mu1_i}-不同蜜罐数量及仿真度下攻击收益随攻击数量的变化.jpeg')
     write_all_value_with_acquires_json(real_result)
 
+def plot_figure5():
+    # 绘制多曲线分图
+    # plt.rcParams.update({'font.size': 22}) 
+    # noz = time.localtime(time.time())
+    # current_time = time.asctime(noz).replace(' ','_')
+    real_result = []
+    mu1 = list(range(1,11,1))
+    mu2 = list(range(1,11,1))
+    mu3 = np.linspace(0.01, 0.99, 10)
+    for mu1_i in mu1:
+        cur_beta = list(range(0,mu1_i+1,1))
+        # fig, axs = plt.subplots(5, 2, figsize=(25,20))
+        # fig.tight_layout()
+        for num,mu2_i in enumerate(mu2):
+            plt.rcParams['font.sans-serif'] = ['SimHei']  # 显示中文
+            fig = plt.figure()
+            for mu3_i in mu3:
+                tmp = []
+                for beta_i in cur_beta:
+                    cur_result = []
+                    numerator = 10*beta_i*factorial(1, mu1_i)*factorial(1, mu1_i+mu2_i*mu3_i-beta_i)
+                    denominator = factorial(1, mu1_i-beta_i)*factorial(1, mu1_i+mu2_i*mu3_i)
+                    target_3 = numerator / denominator
+                    tmp.append(target_3)
+                    cur_result.append(mu1_i)
+                    cur_result.append(mu2_i)
+                    cur_result.append(mu3_i)
+                    cur_result.append(beta_i)
+                    cur_result.append(target_3)
+                    real_result.append(cur_result)
+                real_size = len(tmp)
+                cur_target = np.array(tmp)
+                plt.plot(cur_beta[:real_size], cur_target,label=r'$\mu_3=%s$' % round(mu3_i,2))
+                plt.legend(loc="right")
+                plt.title(r'$\mu_1=%s,\mu_2=%s$' % (mu1_i,mu2_i),fontsize=8)
+                plt.ylabel('攻击者收益')
+                plt.xlabel('攻击目标数量')
+                # axs[row,column].set(xlabel='攻击目标数量', ylabel='攻击者收益')
+                print(f'{mu1_i}与{mu2_i}:第{num}个')
+                # ax.legend_outer()
+                plt.savefig(f'./different_factors_results/each_mu1_and_mu2_in_one/真实设备数量为{mu1_i}-蜜罐数量为{mu2_i}-不同仿真度下攻击收益随攻击数量的变化.jpeg')
+    write_all_value_with_acquires_json(real_result)
 
 def write_all_value_with_acquires_json(data):
     filepath = './all_value_with_acquires.json'
@@ -212,4 +254,5 @@ if __name__ == "__main__":
     # plot_figure2()
     # plot_figure3()
     # plot_figure1()
-    plot_figure4()
+    # plot_figure4()
+    plot_figure5()
